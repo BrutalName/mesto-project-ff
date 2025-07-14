@@ -3,7 +3,7 @@
 import '../pages/index.css'
 import cards from './cards'
 import {createCard, deleteCard, addLike, editButton, addButton} from './card'
-import {openPop, closePop, formProfile, formPlace, addPopupImage, popupALL, popupEdit, popupNewCard, nameInputProfile, descriptionInputProfile, nameInputPlace, linkInputPlace} from './modal'
+import {openPop, closePop, formProfile, formPlace, addPopupImage} from './modal'
 
 // DOM узлы
 
@@ -15,6 +15,13 @@ const profileName = document.querySelector('.profile__title')
 const profileDescription = document.querySelector('.profile__description')
 const logoAdress = new URL('../images/logo.svg', import.meta.url)
 const avatarAdress = new URL('../images/avatar.jpg', import.meta.url)
+const popupALL = document.querySelectorAll('.popup')
+const popupEdit = document.querySelector('.popup_type_edit')
+const popupNewCard = document.querySelector('.popup_type_new-card')
+const nameInputProfile = formProfile['name']
+const descriptionInputProfile = formProfile['description']
+const nameInputPlace = formPlace['place-name']
+const linkInputPlace = formPlace['link']
 
 // Лого
 
