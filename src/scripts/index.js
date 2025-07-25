@@ -152,8 +152,6 @@ function handleFormSubmitPlace (evt) {
     evt.preventDefault()
     cardData.cardImg = linkInputPlace.value
     cardData.cardTitle = nameInputPlace.value
-    cardData.likeCount = '0'
-    cardData.cardId = '0'
     addApiNewCard({name: cardData.cardTitle, link: cardData.cardImg})
         .then(res => {
             if (res.ok) {
@@ -162,15 +160,16 @@ function handleFormSubmitPlace (evt) {
             return Promise.reject(`Ошибка: ${res.status}`);
         })
         .then((result) => {
+            cardData.likeCount = result.likes.length
             cardData.cardId = result._id
         })
         .catch((err) => {
             console.log(err)
         })
         .finally(() => {
+            cardsList.prepend(createCard(cardData))
             buttonSubmitformPlace.textContent = 'Сохранить'
         })
-    cardsList.prepend(createCard(cardData))
     formPlace.reset()
     clearValidation(formPlace, classСontainer)
     closePopup(popupNewCard)
