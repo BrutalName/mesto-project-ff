@@ -1,3 +1,12 @@
+//import cards from './cards'
+
+//cards.initialCards.forEach(function (card) {
+//  cardData.cardImg = card.link
+//  cardData.cardTitle = card.name
+//  const cardNew = createCard(cardData)
+// cardsList.append(cardNew)
+//})
+
 const initialCards = [
   {
     name: "Архыз",
