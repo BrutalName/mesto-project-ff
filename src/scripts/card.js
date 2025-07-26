@@ -70,11 +70,13 @@ export function addLike(element) {
     element.classList.toggle("card__like-button_is-active");
 }
 
-export function findMyLike(card, cardData) {
-    card.likes.forEach((likes) => {
-        if (cardData.myId == likes._id) {
-            const _id = card._id;
-            cardData.listILike[_id] = card;
-        }
+export function findMyLike(cardsData, cardData) {
+    cardsData.forEach((card) => {
+        card.likes.forEach((likes) => {
+            if (cardData.myId == likes._id) {
+                const _id = card._id;
+                cardData.listILike[_id] = card;
+            }
+        });
     });
 }

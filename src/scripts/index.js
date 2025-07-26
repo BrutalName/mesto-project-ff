@@ -219,9 +219,7 @@ Promise.all([getProfileMe(), createCardsList()])
         profileDescription.textContent = profileData.about;
         cardData.myId = profileData._id;
         cardData.listILike = {};
-        cardsData.forEach((card) => {
-            findMyLike(card, cardData);
-        });
+        findMyLike(cardsData, cardData);
         return cardsData;
     })
     .then((cards) => {
