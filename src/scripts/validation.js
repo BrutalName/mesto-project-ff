@@ -68,7 +68,6 @@ export function clearValidation(form, classСontainer) {
   const inputList = Array.from(form.querySelectorAll(classСontainer.inputSelector));
   const buttonElement = form.querySelector(classСontainer.submitButtonSelector);
   inputList.forEach((inputElement) => {
-      checkInputValidity(form, inputElement, classСontainer.errorClass, classСontainer.inputErrorClass, checkValidityPatern, showInputError, hideInputError);
       hideInputError(form, inputElement, classСontainer.errorClass, classСontainer.inputErrorClass);
   });
   toggleButtonState(inputList, buttonElement, classСontainer.inactiveButtonClass, hasInvalidInput);

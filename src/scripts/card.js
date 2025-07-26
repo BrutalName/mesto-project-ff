@@ -26,7 +26,6 @@ export function createCard(cardData) {
         if (!buttonLike.classList.contains("card__like-button_is-active")) {
             cardData
                 .addLikeApiCard(cardElement.id)
-                .then((res) => cardData.getResponseData(res))
                 .then((result) => {
                     document.getElementById(`${cardElement.id}`).querySelector(".card__like-count").textContent = result.likes.length;
                 })
@@ -39,7 +38,6 @@ export function createCard(cardData) {
         } else {
             cardData
                 .removeLikeApiCard(cardElement.id)
-                .then((res) => cardData.getResponseData(res))
                 .then((result) => {
                     document.getElementById(`${cardElement.id}`).querySelector(".card__like-count").textContent = result.likes.length;
                 })
@@ -55,7 +53,11 @@ export function createCard(cardData) {
     buttonDelete.addEventListener("click", () => {
         cardData.cardToDelete = cardElement;
         cardData.addPopupDelete(cardElement);
-    });
+    })
+
+    if (!(cardData.myId == cardData.profileId)) {
+        cardElement.querySelector(".card__delete-button").remove();
+    }
 
     return cardElement;
 }
@@ -66,4 +68,13 @@ export function deleteCard(element) {
 
 export function addLike(element) {
     element.classList.toggle("card__like-button_is-active");
+}
+
+export function findMyLike(card, cardData) {
+    card.likes.forEach((likes) => {
+        if (cardData.myId == likes._id) {
+            const _id = card._id;
+            cardData.listILike[_id] = card;
+        }
+    });
 }

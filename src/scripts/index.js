@@ -1,10 +1,10 @@
 // Импорт
 
 import "../pages/index.css";
-import { createCard, deleteCard, addLike } from "./card";
+import { findMyLike, createCard, deleteCard, addLike } from "./card";
 import { openPopup, closePopup } from "./modal";
 import { enableValidation, clearValidation } from "./validation";
-import { getResponseData, getProfileMe, createCardsList, pushApiProfileInfo, pushApiProfileAvatar, addApiNewCard, deleteApiCard, addLikeApiCard, removeLikeApiCard } from "./api";
+import { getProfileMe, createCardsList, pushApiProfileInfo, pushApiProfileAvatar, addApiNewCard, deleteApiCard, addLikeApiCard, removeLikeApiCard } from "./api";
 
 // DOM узлы
 
@@ -55,8 +55,7 @@ const cardData = {
     addPopupDelete: addPopupDelete,
     addLikeApiCard: addLikeApiCard,
     removeLikeApiCard: removeLikeApiCard,
-    createCard: createCard,
-    getResponseData: getResponseData,
+    createCard: createCard
 };
 
 const classСontainer = {
@@ -130,81 +129,82 @@ function addPopupDelete() {
 
 function handleFormSubmitProfile(evt) {
     evt.preventDefault();
+    buttonSubmitformProfile.textContent = "Сохранение...";
     pushApiProfileInfo({ name: nameInputProfile.value, about: descriptionInputProfile.value })
-        .then((res) => getResponseData(res))
         .then(() => {
-            buttonSubmitformProfile.textContent = "Сохранение...";
             profileName.textContent = nameInputProfile.value;
             profileDescription.textContent = descriptionInputProfile.value;
+        })
+        .then(() => {
+            formProfile.reset();
+            closePopup(popupProfile);
         })
         .catch((err) => {
             console.log(err);
         })
         .finally(() => {
             buttonSubmitformProfile.textContent = "Сохранить";
-            formProfile.reset();
-            closePopup(popupProfile);
-        });
+        })
 }
 
 function handleFormSubmitPlace(evt) {
     evt.preventDefault();
-    addApiNewCard({ name: cardData.cardTitle, link: cardData.cardImg })
-        .then((res) => getResponseData(res))
+    buttonSubmitformPlace.textContent = "Сохранение...";
+    addApiNewCard({ name: nameInputPlace.value, link: linkInputPlace.value })
         .then((result) => {
             cardData.cardImg = linkInputPlace.value;
             cardData.cardTitle = nameInputPlace.value;
-            buttonSubmitformPlace.textContent = "Сохранение...";
             cardData.likeCount = result.likes.length;
             cardData.cardId = result._id;
+        })
+        .then(() => {
+            formPlace.reset();
+            cardsList.prepend(createCard(cardData));
+            closePopup(popupNewCard);
         })
         .catch((err) => {
             console.log(err);
         })
         .finally(() => {
-            formPlace.reset();
-            cardsList.prepend(createCard(cardData));
             buttonSubmitformPlace.textContent = "Сохранить";
-            closePopup(popupNewCard);
-        });
+        })
 }
 
 function handleFormSubmitDelete(evt) {
     evt.preventDefault();
+    buttonSubmitformDelete.textContent = "Удаление...";
     deleteApiCard(cardData.cardToDelete.id)
-        .then((res) => getResponseData(res))
-        .then(() => {
-            buttonSubmitformDelete.textContent = "Удаление...";
-        })
         .then(() => {
             cardData.deleteCard(cardData.cardToDelete);
+        })
+        .then(() => {
+            closePopup(popupDeleteCard);
         })
         .catch((err) => {
             console.log(err);
         })
         .finally(() => {
             buttonSubmitformDelete.textContent = "Да";
-            closePopup(popupDeleteCard);
-        });
+        })
 }
 
 function handleNewAvatar(evt) {
     evt.preventDefault();
+    buttonSubmitformAvatar.textContent = "Сохранение...";
     pushApiProfileAvatar(linkInputAvatar.value)
-        .then((res) => getResponseData(res))
         .then(() => {
-            buttonSubmitformAvatar.textContent = "Сохранение...";
-
             avatarImage.style.backgroundImage = `url('${linkInputAvatar.value}')`;
+        })
+        .then(() => {
+            formAvatar.reset();
+            closePopup(popupAvatar);
         })
         .catch((err) => {
             console.log(err);
         })
         .finally(() => {
-            formAvatar.reset();
             buttonSubmitformAvatar.textContent = "Сохранить";
-            closePopup(popupAvatar);
-        });
+        })
 }
 
 //  Запуск
@@ -212,12 +212,6 @@ function handleNewAvatar(evt) {
 enableValidation(classСontainer);
 
 Promise.all([getProfileMe(), createCardsList()])
-    .then(([profileResponse, cardsResponse]) => {
-        if (profileResponse.ok && cardsResponse.ok) {
-            return Promise.all([profileResponse.json(), cardsResponse.json()]);
-        }
-        return Promise.reject(`Ошибка`);
-    })
     .then(([profileData, cardsData]) => {
         avatarImage.style.backgroundImage = `url('${profileData.avatar}')`;
         profileName.textContent = profileData.name;
@@ -225,12 +219,7 @@ Promise.all([getProfileMe(), createCardsList()])
         cardData.myId = profileData._id;
         cardData.listILike = {};
         cardsData.forEach((card) => {
-            card.likes.forEach((likes) => {
-                if (cardData.myId == likes._id) {
-                    const _id = card._id;
-                    cardData.listILike[_id] = card;
-                }
-            });
+            findMyLike(card, cardData);
         });
         return cardsData;
     })
@@ -243,9 +232,7 @@ Promise.all([getProfileMe(), createCardsList()])
             cardData.cardId = card._id;
 
             const cardNew = cardData.createCard(cardData);
-            if (!(cardData.myId == cardData.profileId)) {
-                cardNew.querySelector(".card__delete-button").remove();
-            }
+
             cardData.cardsList.append(cardNew);
         });
     })

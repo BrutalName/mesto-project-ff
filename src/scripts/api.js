@@ -17,7 +17,8 @@ export function getProfileMe() {
         headers: {
             authorization: configApi.authorizationApi,
         },
-    });
+    })
+    .then((res) => getResponseData(res))
 }
 
 export function createCardsList() {
@@ -25,7 +26,8 @@ export function createCardsList() {
         headers: {
             authorization: configApi.authorizationApi,
         },
-    });
+    })
+    .then((res) => getResponseData(res))
 }
 
 export function pushApiProfileInfo(obj) {
@@ -39,7 +41,8 @@ export function pushApiProfileInfo(obj) {
             name: obj.name,
             about: obj.about,
         }),
-    });
+    })
+    .then((res) => getResponseData(res))
 }
 
 export function pushApiProfileAvatar(avatar) {
@@ -52,7 +55,8 @@ export function pushApiProfileAvatar(avatar) {
         body: JSON.stringify({
             avatar: avatar,
         }),
-    });
+    })
+    .then((res) => getResponseData(res))
 }
 
 export function addApiNewCard(obj) {
@@ -66,7 +70,8 @@ export function addApiNewCard(obj) {
             name: obj.name,
             link: obj.link,
         }),
-    });
+    })
+    .then((res) => getResponseData(res))
 }
 
 export function deleteApiCard(cardId) {
@@ -76,7 +81,8 @@ export function deleteApiCard(cardId) {
             authorization: configApi.authorizationApi,
             "Content-Type": "application/json",
         },
-    });
+    })
+    .then((res) => getResponseData(res))
 }
 
 export function addLikeApiCard(cardId) {
@@ -89,7 +95,8 @@ export function addLikeApiCard(cardId) {
         body: JSON.stringify({
             _id: cardId,
         }),
-    });
+    })
+    .then((res) => getResponseData(res))
 }
 
 export function removeLikeApiCard(cardId) {
@@ -99,5 +106,6 @@ export function removeLikeApiCard(cardId) {
             authorization: configApi.authorizationApi,
             "Content-Type": "application/json",
         },
-    });
+    })
+    .then((res) => getResponseData(res))
 }
