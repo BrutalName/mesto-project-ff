@@ -156,6 +156,7 @@ function handleFormSubmitPlace(evt) {
             cardData.cardTitle = nameInputPlace.value;
             cardData.likeCount = result.likes.length;
             cardData.cardId = result._id;
+            cardData.profileId = result.owner._id
         })
         .then(() => {
             formPlace.reset();
